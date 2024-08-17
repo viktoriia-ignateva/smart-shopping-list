@@ -1,0 +1,20 @@
+# Node.js modules
+node_modules/
+
+# Environment files
+.env
+
+# OS-specific files
+.DS_Store
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+
+# Build directories
+build/
+dist/
+
+# Logs
+*.log
