@@ -1,4 +1,4 @@
-const soppingLists = [
+const shoppingLists = [
     'grocery',
     'cloths',
     'cats'
@@ -11,7 +11,7 @@ const soppingLists = [
 // }
 
 export default function SoppingLists() {
-    const listItem = soppingLists.map(list => <li>{list}</li>)
+    const listItem = shoppingLists.map(list => <li>{list}</li>)
 
     return (
         <div className="flex justify-center bg-gray-100">
