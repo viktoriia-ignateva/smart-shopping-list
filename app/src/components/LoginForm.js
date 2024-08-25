@@ -18,61 +18,61 @@ function Input({inputName, handleInput}) {
     )
 }
 
-function RegisterButton({email, password, setError}) {
+function LoginButton({email, password, setError}) {
     const navigate = useNavigate();
     function handleSubmit() {
-         setError('')
-         const url = 'http://localhost:5001/api/auth/register'
-         const options = {
-             method: 'POST',
-             headers: {
-                 'Content-Type': 'application/json',
-             },
-             body: JSON.stringify({
-                 username: email,
-                 password: password,
-             }),
-         }
+        setError('')
+        const url = 'http://localhost:5001/api/auth/login'
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: email,
+                password: password,
+            }),
+        }
 
-         fetch(url, options)
-             .then(async response => {
-                 if (!response.ok) {
-                     const data = await response.json()
+        fetch(url, options)
+            .then(async response => {
+                if (!response.ok) {
+                    const data = await response.json()
 
-                     if (data.message === 'User already exists') {
-                         setError(data.message)
-                         throw new Error('User already exists')
-                     }
+                    if (data.message === 'Invalid credentials') {
+                        setError(data.message)
+                        throw new Error('Invalid credentials')
+                    }
 
-                     throw new Error('Network response was not ok')
-                 }
-                 return response.json();
-             })
-             .then(data => {
-                 console.log('Success:', data);
-                 localStorage.setItem('authToken', data.token);
-                 console.log('Token:', data.token);
-                 navigate('/lists')
-             })
-             .catch(error => {
-                 console.error('Error:', error);
-                 // Handle errors
-             });
+                    throw new Error('Network response was not ok')
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                localStorage.setItem('authToken', data.token);
+                console.log('Token:', data.token);
+                navigate('/lists')
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle errors
+            });
     }
 
     return (
         <div>
             <button onClick={handleSubmit}
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    type="submit"
+                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
-                Register
+                Login
             </button>
         </div>
     )
 }
 
-export default function RegistrationForm() {
+export default function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('')
@@ -93,7 +93,7 @@ export default function RegistrationForm() {
                         {error}
                     </div>
                 )}
-                <RegisterButton
+                <LoginButton
                     email={email}
                     password={password}
                     setError={setError}/>

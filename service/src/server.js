@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const authenticateToken = require('./authMiddleware');
+require('dotenv').config();
 
 const app = express();
 
@@ -13,11 +15,13 @@ mongoose.connect('mongodb://localhost/shopping-list-app')
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
+const auth = require('./routes/auth');
+
+app.use('/api/auth/shopping-list', authenticateToken);
+app.use('/api/auth', auth);
+
 // Routes
 app.get('/', (req, res) => res.send('API running'));
-
-const auth = require('./routes/auth');
-app.use('/api/auth', auth);
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
