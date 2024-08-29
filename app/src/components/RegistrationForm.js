@@ -20,8 +20,10 @@ function Input({inputName, handleInput}) {
 
 function RegisterButton({email, password, setError}) {
     const navigate = useNavigate();
+
     function handleSubmit() {
          setError('')
+
          const url = 'http://localhost:5001/api/auth/register'
          const options = {
              method: 'POST',

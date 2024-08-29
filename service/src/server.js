@@ -2,9 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authenticateToken = require('./authMiddleware');
-require('dotenv').config();
-
+const auth = require('./routes/auth')
 const app = express();
+
+require('dotenv').config();
 
 // Middleware
 app.use(cors());
@@ -15,10 +16,8 @@ mongoose.connect('mongodb://localhost/shopping-list-app')
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
-const auth = require('./routes/auth');
-
-app.use('/api/auth/shopping-list', authenticateToken);
-app.use('/api/auth', auth);
+app.use('/api/auth/shopping-list', authenticateToken)
+app.use('/api/auth', auth)
 
 // Routes
 app.get('/', (req, res) => res.send('API running'));

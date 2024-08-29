@@ -20,6 +20,8 @@ function Input({inputName, handleInput}) {
 
 function LoginButton({email, password, setError}) {
     const navigate = useNavigate();
+    console.log("start to submit:" + email + password)
+
     function handleSubmit() {
         setError('')
         const url = 'http://localhost:5001/api/auth/login'
@@ -49,7 +51,7 @@ function LoginButton({email, password, setError}) {
                 return response.json();
             })
             .then(data => {
-                console.log('Success:', data);
+                console.log('Success (login):', data);
                 localStorage.setItem('authToken', data.token);
                 console.log('Token:', data.token);
                 navigate('/lists')
@@ -82,7 +84,10 @@ export default function LoginForm() {
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <Input
                     inputName={"Email"}
-                    handleInput={(event) => {setEmail(event.target.value)}}
+                    handleInput={(event) => {
+                        setEmail(event.target.value)
+                        console.log("list name "+ JSON.stringify(email)) //debug
+                    }}
                 />
                 <Input
                     inputName={"Password"}

@@ -28,7 +28,6 @@ router.post('/register', async (req, res) => {
         user.password = await bcrypt.hash(password, salt)
 
         // Generate a JWT token
-        console.log('JWT_SECRET:', process.env.JWT_SECRET);
         const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
         // Save the user to the database
@@ -69,15 +68,15 @@ router.post('/login', async (req, res) => {
 })
 
 // Route to get all shopping lists for the authenticated user
-router.get('/shopping-list:userId', async (req, res) => {
-    const userId = req.params.userId
+router.get('/shopping-list', async (req, res) => {
+    const userID = req.user.id
 
     try {
-        const shoppingList = await ShoppingList.find(userId)
+        const shoppingList = await ShoppingList.find({ userID: userID })
 
         res.status(200).json(shoppingList)
     } catch (error) {
-        console.error('Error occurred:', err.stack)
+        console.error('Error occurred:', error.stack)
         res.status(500).send('Server error, could not get shopping list')
     }
 })
@@ -85,10 +84,10 @@ router.get('/shopping-list:userId', async (req, res) => {
 // Route to creat a new shopping list
 router.post('/shopping-list', async (req, res) => {
     const {listName: name} = req.body
+    const userID = req.user.id
 
     try {
         // create a new shopping list
-        const userID = req.user.id
         const shoppingList = new ShoppingList({userID, name})
 
         // save the shopping list
@@ -103,12 +102,15 @@ router.post('/shopping-list', async (req, res) => {
 })
 
 // Route to update a shopping list
-router.put('/shopping-list:listId', (req, res) => {
-    const listId = req.params.listId
-    const listName = req.body
+router.put('/shopping-list/:listId', async (req, res) => {
+    const shoppingList_id = req.params.listId
+    const updateData = req.body.updateData
 
     try {
-        const shoppingList = ShoppingList.findByIdAndUpdate(listId, listName)
+        const shoppingList = await ShoppingList.findByIdAndUpdate(
+            shoppingList_id,                // ID of the document
+            {name: updateData},         // Update object
+        )
 
         if (!shoppingList) {
             return res.status(404).json({ message: 'Shopping list not found' });
@@ -116,22 +118,22 @@ router.put('/shopping-list:listId', (req, res) => {
 
         res.status(200).json(shoppingList);
     } catch (error) {
-        console.log('Error occurred:', err.stack)
+        console.log('Error occurred:', error.stack)
         res.status(500).send('Server error, could not update shopping list')
     }
 })
 
 // Delete a shopping list
-router.delete('/shopping-lists/:id', async (req, res) => {
-    const listId = req.params.id
+router.delete('/shopping-list/:listId', async (req, res) => {
+    const shoppingList_id = req.params.listId
 
     try {
-        const shoppingList = await ShoppingList.findByIdAndDelete(listId)
+        const shoppingList = await ShoppingList.findByIdAndDelete(shoppingList_id)
         if (!shoppingList) {
             return res.status(404).json({ message: 'Shopping list not found' })
         }
         res.status(200).json({ message: 'Shopping list deleted' })
-    } catch (err) {
+    } catch (error) {
         res.status(500).send('Server error, could not update shopping list')
     }
 })
