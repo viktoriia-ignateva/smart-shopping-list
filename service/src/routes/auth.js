@@ -72,9 +72,10 @@ router.get('/shopping-list', async (req, res) => {
     const userID = req.user.id
 
     try {
-        const shoppingList = await ShoppingList.find({ userID: userID })
+        //get all the shopping lists
+        const shoppingLists = await ShoppingList.find({ userID: userID })
 
-        res.status(200).json(shoppingList)
+        res.status(200).json(shoppingLists)
     } catch (error) {
         console.error('Error occurred:', error.stack)
         res.status(500).send('Server error, could not get shopping list')
@@ -83,7 +84,7 @@ router.get('/shopping-list', async (req, res) => {
 
 // Route to creat a new shopping list
 router.post('/shopping-list', async (req, res) => {
-    const {listName: name} = req.body
+    const {name: name} = req.body
     const userID = req.user.id
 
     try {
@@ -93,8 +94,10 @@ router.post('/shopping-list', async (req, res) => {
         // save the shopping list
         await shoppingList.save()
 
-        res.status(200).json(shoppingList)
+        //get all the shopping lists
+        const shoppingLists = await ShoppingList.find({ userID: userID })
 
+        res.status(200).json(shoppingLists)
     } catch (error) {
         console.log('Error occurred:', error.stack)
         res.status(500).send('Server error, could not create shopping list')
@@ -126,13 +129,20 @@ router.put('/shopping-list/:listId', async (req, res) => {
 // Delete a shopping list
 router.delete('/shopping-list/:listId', async (req, res) => {
     const shoppingList_id = req.params.listId
+    const userID = req.user.id
 
     try {
+        // find and delete a shopping list
         const shoppingList = await ShoppingList.findByIdAndDelete(shoppingList_id)
+
         if (!shoppingList) {
             return res.status(404).json({ message: 'Shopping list not found' })
         }
-        res.status(200).json({ message: 'Shopping list deleted' })
+
+        //get all the shopping lists
+        const shoppingLists = await ShoppingList.find({ userID: userID })
+
+        res.status(200).json(shoppingLists)
     } catch (error) {
         res.status(500).send('Server error, could not update shopping list')
     }
