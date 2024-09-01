@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
 })
 
 // Route to get all shopping lists for the authenticated user
-router.get('/shopping-list', async (req, res) => {
+router.get('/shopping-lists', async (req, res) => {
     const userID = req.user.id
 
     try {
@@ -84,7 +84,7 @@ router.get('/shopping-list', async (req, res) => {
 
 // Route to creat a new shopping list
 router.post('/shopping-list', async (req, res) => {
-    const {name: name} = req.body
+    const name = req.body.name
     const userID = req.user.id
 
     try {
@@ -104,12 +104,14 @@ router.post('/shopping-list', async (req, res) => {
     }
 })
 
-// Route to update a shopping list
+// Route to update a shopping list name
 router.put('/shopping-list/:listId', async (req, res) => {
     const shoppingList_id = req.params.listId
-    const updateData = req.body.updateData
+    const updateData = req.body.listName
+    const userID = req.user.id
 
     try {
+        // find and update a shopping list
         const shoppingList = await ShoppingList.findByIdAndUpdate(
             shoppingList_id,                // ID of the document
             {name: updateData},         // Update object
@@ -119,7 +121,10 @@ router.put('/shopping-list/:listId', async (req, res) => {
             return res.status(404).json({ message: 'Shopping list not found' });
         }
 
-        res.status(200).json(shoppingList);
+        //get all the shopping lists
+        const shoppingLists = await ShoppingList.find({ userID: userID })
+
+        res.status(200).json(shoppingLists);
     } catch (error) {
         console.log('Error occurred:', error.stack)
         res.status(500).send('Server error, could not update shopping list')
@@ -147,5 +152,32 @@ router.delete('/shopping-list/:listId', async (req, res) => {
         res.status(500).send('Server error, could not update shopping list')
     }
 })
+
+// Route to add an item to a shopping list
+router.post('/shopping-list/:listId/item', async (req, res) => {
+    const listId = req.params.listId
+    const name = req.body.name
+
+    try {
+        // Find the shopping list by ID
+        const shoppingList = await ShoppingList.findById(listId);
+
+        if (!shoppingList) {
+            return res.status(404).json({ message: 'Shopping list not found' });
+        }
+
+        // Add the new item to the shopping list
+        const newItem = { name };
+        shoppingList.items.push(newItem);
+
+        // Save the updated shopping list
+        await shoppingList.save();
+
+        res.status(200).json(shoppingList);
+    } catch (error) {
+        console.error('Error occurred while adding item:', error.stack);
+        res.status(500).send('Server error, could not add item');
+    }
+});
 
 module.exports = router

@@ -16,6 +16,7 @@ mongoose.connect('mongodb://localhost/shopping-list-app')
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.log(err));
 
+app.use('/api/auth/shopping-lists', authenticateToken)
 app.use('/api/auth/shopping-list', authenticateToken)
 app.use('/api/auth', auth)
 

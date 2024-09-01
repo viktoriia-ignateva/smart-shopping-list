@@ -1,5 +1,5 @@
 export const ShoppingListItem = ({ item }) => {
-    return <div>
-        <div>Carrot</div>
-    </div>
+    return <li key={item._id}>
+        {item.name}
+    </li>
 }

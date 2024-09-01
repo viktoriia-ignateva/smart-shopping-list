@@ -10,6 +10,12 @@ const ShoppingListSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    items: [{
+        name: { type: String, required: true },
+        completed: {type: Boolean, default: false},
+        lastBoughtDate: {type: Date, required: false},
+        frequency: {type: Number, required: false}
+    }]
 })
 
 module.exports = mongoose.model('ShoppingList', ShoppingListSchema)

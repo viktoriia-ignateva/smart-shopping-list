@@ -5,7 +5,7 @@ import {useState} from "react";
 export default function Dashboard() {
     const [selectedList, setSelectedList] = useState(null)
     return (
-        <div className="flex bg-gray-100">
+        <div className="flex bg-gray-100 gap-4">
             <ShoppingLists setSelectedList={setSelectedList} />
             <ShoppingListView selectedList={selectedList}/>
         </div>
