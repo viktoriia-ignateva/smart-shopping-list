@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function Input({inputName, handleInput}) {
+function Input({ inputName, handleInput }) {
     return (
         <div className="max-w-xs mx-auto">
-            <label htmlFor={inputName} className="block text-gray-700 font-semibold mb-2">
+            <label
+                htmlFor={inputName}
+                className="block text-gray-700 font-semibold mb-2"
+            >
                 {inputName}
             </label>
             <input
@@ -18,9 +21,9 @@ function Input({inputName, handleInput}) {
     )
 }
 
-function LoginButton({email, password, setError}) {
-    const navigate = useNavigate();
-    console.log("start to submit:" + email + password)
+function LoginButton({ email, password, setError }) {
+    const navigate = useNavigate()
+    console.log('start to submit:' + email + password)
 
     function handleSubmit() {
         setError('')
@@ -37,7 +40,7 @@ function LoginButton({email, password, setError}) {
         }
 
         fetch(url, options)
-            .then(async response => {
+            .then(async (response) => {
                 if (!response.ok) {
                     const data = await response.json()
 
@@ -48,25 +51,26 @@ function LoginButton({email, password, setError}) {
 
                     throw new Error('Network response was not ok')
                 }
-                return response.json();
+                return response.json()
             })
-            .then(data => {
-                console.log('Success (login):', data);
-                localStorage.setItem('authToken', data.token);
-                console.log('Token:', data.token);
+            .then((data) => {
+                console.log('Success (login):', data)
+                localStorage.setItem('authToken', data.token)
+                console.log('Token:', data.token)
                 navigate('/lists')
             })
-            .catch(error => {
-                console.error('Error:', error);
+            .catch((error) => {
+                console.error('Error:', error)
                 // Handle errors
-            });
+            })
     }
 
     return (
         <div>
-            <button onClick={handleSubmit}
-                    type="submit"
-                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            <button
+                onClick={handleSubmit}
+                type="submit"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
                 Login
             </button>
@@ -75,23 +79,25 @@ function LoginButton({email, password, setError}) {
 }
 
 export default function LoginForm() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
     const [error, setError] = useState('')
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 gap-4">
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
                 <Input
-                    inputName={"Email"}
+                    inputName={'Email'}
                     handleInput={(event) => {
                         setEmail(event.target.value)
-                        console.log("list name "+ JSON.stringify(email)) //debug
+                        console.log('list name ' + JSON.stringify(email)) //debug
                     }}
                 />
                 <Input
-                    inputName={"Password"}
-                    handleInput={(event) => {setPassword(event.target.value)}}
+                    inputName={'Password'}
+                    handleInput={(event) => {
+                        setPassword(event.target.value)
+                    }}
                 />
                 {error && (
                     <div className="text-red-500 font-semibold mb-2">
@@ -101,7 +107,8 @@ export default function LoginForm() {
                 <LoginButton
                     email={email}
                     password={password}
-                    setError={setError}/>
+                    setError={setError}
+                />
             </div>
         </div>
     )

@@ -5,9 +5,9 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const ShoppingList = require('../models/ShoppingList')
-require("dotenv").config();
+require('dotenv').config()
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET
 
 // Route for user registration
 router.post('/register', async (req, res) => {
@@ -28,21 +28,25 @@ router.post('/register', async (req, res) => {
         user.password = await bcrypt.hash(password, salt)
 
         // Generate a JWT token
-        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' })
 
         // Save the user to the database
         await user.save()
 
-        res.status(200).json({ message: 'User register successfully', token, user: { id: user._id, username: user.username } });
+        res.status(200).json({
+            message: 'User register successfully',
+            token,
+            user: { id: user._id, username: user.username },
+        })
     } catch (err) {
-        console.error('Error occurred:', err.stack); // Log the error stack
+        console.error('Error occurred:', err.stack) // Log the error stack
         res.status(500).send('Server error')
     }
 })
 
 // Route for user login
 router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body
 
     try {
         // Check if the user exists
@@ -58,11 +62,15 @@ router.post('/login', async (req, res) => {
         }
 
         // Generate a JWT token
-        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' })
 
-        res.status(200).json({ message: 'User logged in successfully', token, user: { id: user._id, username: user.username } });
+        res.status(200).json({
+            message: 'User logged in successfully',
+            token,
+            user: { id: user._id, username: user.username },
+        })
     } catch (err) {
-        console.error('Error occurred:', err.stack);
+        console.error('Error occurred:', err.stack)
         res.status(500).send('Server error')
     }
 })
@@ -89,7 +97,7 @@ router.post('/shopping-list', async (req, res) => {
 
     try {
         // create a new shopping list
-        const shoppingList = new ShoppingList({userID, name})
+        const shoppingList = new ShoppingList({ userID, name })
 
         // save the shopping list
         await shoppingList.save()
@@ -114,17 +122,17 @@ router.put('/shopping-list/:listId', async (req, res) => {
         // find and update a shopping list
         const shoppingList = await ShoppingList.findByIdAndUpdate(
             shoppingList_id,                // ID of the document
-            {name: updateData},         // Update object
+            { name: updateData },         // Update object
         )
 
         if (!shoppingList) {
-            return res.status(404).json({ message: 'Shopping list not found' });
+            return res.status(404).json({ message: 'Shopping list not found' })
         }
 
         //get all the shopping lists
         const shoppingLists = await ShoppingList.find({ userID: userID })
 
-        res.status(200).json(shoppingLists);
+        res.status(200).json(shoppingLists)
     } catch (error) {
         console.log('Error occurred:', error.stack)
         res.status(500).send('Server error, could not update shopping list')
@@ -160,24 +168,50 @@ router.post('/shopping-list/:listId/item', async (req, res) => {
 
     try {
         // Find the shopping list by ID
-        const shoppingList = await ShoppingList.findById(listId);
+        const shoppingList = await ShoppingList.findById(listId)
 
         if (!shoppingList) {
-            return res.status(404).json({ message: 'Shopping list not found' });
+            return res.status(404).json({ message: 'Shopping list not found' })
         }
 
         // Add the new item to the shopping list
-        const newItem = { name };
-        shoppingList.items.push(newItem);
+        const newItem = { name }
+        shoppingList.items.push(newItem)
 
         // Save the updated shopping list
-        await shoppingList.save();
+        await shoppingList.save()
 
-        res.status(200).json(shoppingList);
+        res.status(200).json(shoppingList)
     } catch (error) {
-        console.error('Error occurred while adding item:', error.stack);
-        res.status(500).send('Server error, could not add item');
+        console.error('Error occurred while adding item:', error.stack)
+        res.status(500).send('Server error, could not add item')
     }
-});
+})
+
+// Route to delete an item to a shopping list
+router.delete('/shopping-list/:listId/item/:itemId', async (req, res) => {
+    const listId = req.params.listId
+    const itemId = req.params.itemId
+
+    try {
+        // Find the shopping list by ID
+        const shoppingList = await ShoppingList.findById(listId)
+
+        if (!shoppingList) {
+            return res.status(404).json({ message: 'Shopping list not found' })
+        }
+
+        // Delete the item to the shopping list
+        shoppingList.items = shoppingList.items.filter(item => item.id !== itemId)
+
+        // Save the updated shopping list
+        await shoppingList.save()
+
+        res.status(200).json(shoppingList)
+    } catch (error) {
+        console.error('Error occurred while adding item:', error.stack)
+        res.status(500).send('Server error, could not add item')
+    }
+})
 
 module.exports = router
