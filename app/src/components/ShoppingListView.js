@@ -1,5 +1,6 @@
 import { ShoppingListItem } from './ShoppingListItem'
 import React, { useState } from 'react'
+import moment from 'moment'
 
 export const ShoppingListView = ({
     selectedList,
@@ -8,6 +9,14 @@ export const ShoppingListView = ({
     markItemAsBought,
 }) => {
     const [newItemName, setNewItemName] = useState('')
+
+    const itemsAlreadyBought = selectedList?.items?.filter((item) => {
+        const lastBoughtDate = moment(item.lastBoughtDate)
+        return item.bought && moment().diff(lastBoughtDate, 'days') < 1
+    })
+    const itemsStillNeedToBuy = selectedList?.items?.filter(
+        (item) => !item.bought
+    )
 
     return (
         <>
@@ -18,31 +27,27 @@ export const ShoppingListView = ({
                             {selectedList.name}
                         </h1>
                         <ul>
-                            {selectedList.items
-                                ?.filter((item) => item.bought)
-                                .map((item) => (
-                                    <ShoppingListItem
-                                        key={item._id}
-                                        item={item}
-                                        onDelete={() => deleteItem(item._id)}
-                                        markItemAsBought={markItemAsBought}
-                                    />
-                                ))}
+                            {itemsAlreadyBought.map((item) => (
+                                <ShoppingListItem
+                                    key={item._id}
+                                    item={item}
+                                    onDelete={() => deleteItem(item._id)}
+                                    markItemAsBought={markItemAsBought}
+                                />
+                            ))}
                         </ul>
                         <hr className="my-5" />
                         <ul>
-                            {selectedList.items
-                                ?.filter((item) => !item.bought)
-                                .map((item) => (
-                                    <ShoppingListItem
-                                        key={item._id}
-                                        item={item}
-                                        onDelete={() => deleteItem(item._id)}
-                                        markItemAsBought={() =>
-                                            markItemAsBought(item._id)
-                                        }
-                                    />
-                                ))}
+                            {itemsStillNeedToBuy.map((item) => (
+                                <ShoppingListItem
+                                    key={item._id}
+                                    item={item}
+                                    onDelete={() => deleteItem(item._id)}
+                                    markItemAsBought={() =>
+                                        markItemAsBought(item._id)
+                                    }
+                                />
+                            ))}
                         </ul>
                     </div>
                     <div className="flex items-center">
