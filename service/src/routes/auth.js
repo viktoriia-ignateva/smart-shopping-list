@@ -231,6 +231,7 @@ router.put('/shopping-list/:listId/item/:itemId', async (req, res) => {
         // Mark item as bought
         const item = shoppingList.items.id(itemId)
         item.bought = true
+        item.lastBoughtDate = new Date()
 
 
         // Save the updated shopping list
