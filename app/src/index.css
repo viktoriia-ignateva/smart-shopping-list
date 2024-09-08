@@ -2,3 +2,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+#root {
+    display: flex;
+    justify-content: center;
+    margin-top: 80px;
+    min-height: 500px;
+}

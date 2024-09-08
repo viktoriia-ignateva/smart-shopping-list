@@ -110,8 +110,42 @@ export default function Dashboard() {
             .catch((error) => console.error('Error:', error))
     }
 
+    const markItemAsBought = (itemId) => {
+        const url = `http://localhost:5001/api/auth/shopping-list/${selectedListId}/item/${itemId}`
+        const token = localStorage.getItem('authToken')
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        }
+
+        fetch(url, options)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        'Network response was not ok while deleting shopping list item'
+                    )
+                }
+
+                const data = await response.json()
+                setShoppingLists(
+                    shoppingLists.map((list) => {
+                        if (list._id === selectedListId) return data
+                        else return list
+                    })
+                )
+            })
+            .then((data) =>
+                console.log('Success (deleting shopping list item):' + data)
+            )
+            .catch((error) => console.error('Error:', error))
+    }
+
     return (
-        <div className="flex h-screen bg-gray-100 gap-4">
+        <div className="flex w-9/12	 bg-gray-100 gap-4">
             <ShoppingLists
                 shoppingLists={shoppingLists}
                 setShoppingLists={setShoppingLists}
@@ -121,6 +155,7 @@ export default function Dashboard() {
                 selectedList={selectedList}
                 addNewItem={addNewItem}
                 deleteItem={deleteItem}
+                markItemAsBought={markItemAsBought}
             />
         </div>
     )

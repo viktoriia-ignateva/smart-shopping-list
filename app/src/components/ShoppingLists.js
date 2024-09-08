@@ -11,7 +11,7 @@ export default function ShoppingLists({
     const [editingList, setEditingList] = useState(null)
 
     return (
-        <div className="flex justify-between flex-col min-w-96 p-4 bg-white">
+        <div className="flex justify-between flex-col min-w-80 p-4 bg-white">
             <div>
                 <h1 className="text-2xl font-semibold text-center mb-4">
                     My Shopping Lists

@@ -1,7 +1,12 @@
 import { ShoppingListItem } from './ShoppingListItem'
 import React, { useState } from 'react'
 
-export const ShoppingListView = ({ selectedList, addNewItem, deleteItem }) => {
+export const ShoppingListView = ({
+    selectedList,
+    addNewItem,
+    deleteItem,
+    markItemAsBought,
+}) => {
     const [newItemName, setNewItemName] = useState('')
 
     return (
@@ -13,13 +18,31 @@ export const ShoppingListView = ({ selectedList, addNewItem, deleteItem }) => {
                             {selectedList.name}
                         </h1>
                         <ul>
-                            {selectedList.items?.map((item) => (
-                                <ShoppingListItem
-                                    key={item._id}
-                                    item={item}
-                                    onDelete={() => deleteItem(item._id)}
-                                />
-                            ))}
+                            {selectedList.items
+                                ?.filter((item) => item.bought)
+                                .map((item) => (
+                                    <ShoppingListItem
+                                        key={item._id}
+                                        item={item}
+                                        onDelete={() => deleteItem(item._id)}
+                                        markItemAsBought={markItemAsBought}
+                                    />
+                                ))}
+                        </ul>
+                        <hr className="my-5" />
+                        <ul>
+                            {selectedList.items
+                                ?.filter((item) => !item.bought)
+                                .map((item) => (
+                                    <ShoppingListItem
+                                        key={item._id}
+                                        item={item}
+                                        onDelete={() => deleteItem(item._id)}
+                                        markItemAsBought={() =>
+                                            markItemAsBought(item._id)
+                                        }
+                                    />
+                                ))}
                         </ul>
                     </div>
                     <div className="flex items-center">

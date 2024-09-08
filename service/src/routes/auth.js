@@ -202,7 +202,36 @@ router.delete('/shopping-list/:listId/item/:itemId', async (req, res) => {
         }
 
         // Delete the item to the shopping list
-        shoppingList.items = shoppingList.items.filter(item => item.id !== itemId)
+        shoppingList.items.id(itemId).deleteOne()
+
+        // Save the updated shopping list
+        await shoppingList.save()
+
+        res.status(200).json(shoppingList)
+    } catch (error) {
+        console.error('Error occurred while adding item:', error.stack)
+        res.status(500).send('Server error, could not add item')
+    }
+})
+
+
+// Route to mark an item as bought
+router.put('/shopping-list/:listId/item/:itemId', async (req, res) => {
+    const listId = req.params.listId
+    const itemId = req.params.itemId
+
+    try {
+        // Find the shopping list by ID
+        const shoppingList = await ShoppingList.findById(listId)
+
+        if (!shoppingList) {
+            return res.status(404).json({ message: 'Shopping list not found' })
+        }
+
+        // Mark item as bought
+        const item = shoppingList.items.id(itemId)
+        item.bought = true
+
 
         // Save the updated shopping list
         await shoppingList.save()
