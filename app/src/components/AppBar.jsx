@@ -10,7 +10,7 @@ const AppBar = () => {
 
     return (
         <div className="flex justify-between items-center w-full border-b px-4 py-3">
-            Name: Rajeev
+            Name:
             <button
                 className="px-3 flex py-1.5 text-md items-center text-slate-600 hover:text-red-500"
                 onClick={logout}
