@@ -1,8 +1,10 @@
 import ShoppingLists from './ShoppingLists'
 import { ShoppingListView } from './ShoppingListView'
 import { useEffect, useMemo, useState } from 'react'
+import { Navigate } from 'react-router-dom'
 
 export default function Dashboard() {
+    const [error, setError] = useState(null)
     const [shoppingLists, setShoppingLists] = useState([])
     const [selectedListId, setSelectedListId] = useState(null)
 
@@ -21,13 +23,16 @@ export default function Dashboard() {
             headers: {
                 Authorization: 'Bearer ' + token,
             },
+            redirect: 'follow',
         }
 
         fetch(url, options)
             .then(async (response) => {
                 if (!response.ok) {
-                    throw new Error(
-                        'Network response was not ok while get shopping lists'
+                    setError(
+                        new Error(
+                            'Network response was not ok while get shopping lists'
+                        )
                     )
                 }
 
@@ -35,7 +40,9 @@ export default function Dashboard() {
                 setShoppingLists(data)
             })
             .then((data) => console.log('Success (get shopping lists):' + data))
-            .catch((error) => console.error('Error:', error))
+            .catch((error) => {
+                console.error('Error:', error)
+            })
     }, [])
 
     function addNewItem(newItemName) {
@@ -184,8 +191,10 @@ export default function Dashboard() {
             .catch((error) => console.error('Error:', error))
     }
 
+    if (error) return <Navigate to="/login" />
+
     return (
-        <div className="flex w-9/12	 bg-gray-100">
+        <div className="flex bg-gray-50 w-9/12 mt-10 min-h-96 max-w-4xl">
             <ShoppingLists
                 shoppingLists={shoppingLists}
                 setShoppingLists={setShoppingLists}

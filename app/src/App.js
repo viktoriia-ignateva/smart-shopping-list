@@ -1,36 +1,31 @@
 import './index.css'
 import {
     BrowserRouter as Router,
-    Routes,
-    Route,
     Navigate,
+    Route,
+    Routes,
 } from 'react-router-dom'
-import { useEffect, useState } from 'react'
 import RegistrationForm from './components/RegistrationForm'
 import LoginForm from './components/LoginForm'
 import Dashboard from './components/Dashboard'
+import AppBar from './components/AppBar'
 
 export default function App() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-    useEffect(() => {
-        const token = localStorage.getItem('authToken')
-        if (token) {
-            setIsAuthenticated(true)
-        }
-    }, [])
+    const token = localStorage.getItem('authToken')
 
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<LoginForm />} />
                 <Route path="/login" element={<LoginForm />} />
                 <Route path="/register" element={<RegistrationForm />} />
                 <Route
-                    path="/lists"
+                    path="/*"
                     element={
-                        isAuthenticated ? (
-                            <Dashboard />
+                        token ? (
+                            <div className="flex flex-col w-full items-center">
+                                <AppBar />
+                                <Dashboard />
+                            </div>
                         ) : (
                             <Navigate to="/login" />
                         )

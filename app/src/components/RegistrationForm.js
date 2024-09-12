@@ -15,7 +15,7 @@ function Input({ inputName, handleInput }) {
                 type={inputName}
                 placeholder={inputName}
                 onChange={handleInput}
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mb-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
         </div>
     )
@@ -66,19 +66,18 @@ function RegisterButton({ email, password, setError }) {
     }
 
     return (
-        <div>
-            <button
-                onClick={handleSubmit}
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-                Register
-            </button>
-        </div>
+        <button
+            onClick={handleSubmit}
+            type="submit"
+            className="flex w-full mt-2 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+            Register
+        </button>
     )
 }
 
 export default function RegistrationForm() {
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
@@ -103,11 +102,20 @@ export default function RegistrationForm() {
                         {error}
                     </div>
                 )}
-                <RegisterButton
-                    email={email}
-                    password={password}
-                    setError={setError}
-                />
+
+                <div className="p-2 gap-4">
+                    <RegisterButton
+                        email={email}
+                        password={password}
+                        setError={setError}
+                    />
+                    <button
+                        className="flex w-full mt-2 px-3 py-1.5 justify-center items-center text-indigo-500 rounded-md border border-indigo-600"
+                        onClick={() => navigate('/login')}
+                    >
+                        Already have an account ?
+                    </button>
+                </div>
             </div>
         </div>
     )

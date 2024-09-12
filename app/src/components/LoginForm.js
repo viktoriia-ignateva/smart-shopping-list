@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 function Input({ inputName, handleInput }) {
     return (
@@ -15,7 +15,7 @@ function Input({ inputName, handleInput }) {
                 type={inputName}
                 placeholder={inputName}
                 onChange={handleInput}
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mb-4 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
         </div>
     )
@@ -56,7 +56,7 @@ function LoginButton({ email, password, setError }) {
             .then((data) => {
                 console.log('Success (login):', data)
                 localStorage.setItem('authToken', data.token)
-                console.log('Token:', data.token)
+
                 navigate('/lists')
             })
             .catch((error) => {
@@ -66,22 +66,24 @@ function LoginButton({ email, password, setError }) {
     }
 
     return (
-        <div>
-            <button
-                onClick={handleSubmit}
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-                Login
-            </button>
-        </div>
+        <button
+            onClick={handleSubmit}
+            type="submit"
+            className="flex w-1/2 mt-2 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+            Login
+        </button>
     )
 }
 
 export default function LoginForm() {
+    const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const token = localStorage.getItem('authToken')
+
+    if (token) return <Navigate to="/lists" />
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 gap-4">
@@ -104,11 +106,19 @@ export default function LoginForm() {
                         {error}
                     </div>
                 )}
-                <LoginButton
-                    email={email}
-                    password={password}
-                    setError={setError}
-                />
+                <div className="flex p-2 gap-4">
+                    <button
+                        className="flex w-1/2 mt-2 justify-center items-center text-indigo-500 rounded-md border border-indigo-600"
+                        onClick={() => navigate('/register')}
+                    >
+                        Don't have a Account
+                    </button>
+                    <LoginButton
+                        email={email}
+                        password={password}
+                        setError={setError}
+                    />
+                </div>
             </div>
         </div>
     )

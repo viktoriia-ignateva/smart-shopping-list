@@ -121,7 +121,9 @@ export const ShoppingListView = ({
                     </div>
                 </div>
             ) : (
-                <div>Please select a list to view</div>
+                <div className="flex justify-center w-full items-center">
+                    Please select a list to view
+                </div>
             )}
         </>
     )
