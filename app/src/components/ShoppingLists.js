@@ -11,7 +11,7 @@ export default function ShoppingLists({
     const [editingList, setEditingList] = useState(null)
 
     return (
-        <div className="flex justify-between flex-col min-w-80 p-4 bg-white">
+        <div className="flex justify-between flex-col min-w-80 p-4 bg-white border-r">
             <div>
                 <h1 className="text-2xl font-semibold text-center mb-4">
                     My Shopping Lists
@@ -21,7 +21,7 @@ export default function ShoppingLists({
                         {shoppingLists.map((list) => (
                             <li
                                 key={list._id}
-                                className="flex justify-between py-2 px-4 rounded-lg items-center m-2 hover:bg-slate-100 hover:cursor-pointer"
+                                className="flex group justify-between py-2 px-4 rounded-lg items-center m-2 hover:bg-slate-100 hover:cursor-pointer"
                                 onClick={() => setSelectedListId(list._id)}
                             >
                                 {editingList?._id === list._id ? (
@@ -182,7 +182,12 @@ function DeleteShoppingListButton({ listId, setShoppingLists }) {
             )
     }
 
-    return <DeleteButton onClick={handleDelete} />
+    return (
+        <DeleteButton
+            onClick={handleDelete}
+            classNames="invisible group-hover:visible"
+        />
+    )
 }
 
 function EditShoppingListButton({ handleEdit }) {
@@ -190,7 +195,7 @@ function EditShoppingListButton({ handleEdit }) {
         <MdEdit
             onClick={handleEdit}
             size={25}
-            className="fill-slate-500 pr-1 hover:fill-blue-500"
+            className="invisible fill-slate-500 pr-1 group-hover:visible hover:fill-blue-500"
         >
             Edit
         </MdEdit>

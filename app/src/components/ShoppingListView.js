@@ -1,14 +1,17 @@
 import { ShoppingListItem } from './ShoppingListItem'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import moment from 'moment'
+import SuggestedItem from './SuggestedItem'
 
 export const ShoppingListView = ({
     selectedList,
     addNewItem,
     deleteItem,
     markItemAsBought,
+    addItemSuggestionToList,
 }) => {
     const [newItemName, setNewItemName] = useState('')
+    const [shoppingSuggestions, setShoppingSuggestions] = useState([])
 
     const itemsAlreadyBought = selectedList?.items?.filter((item) => {
         const lastBoughtDate = moment(item.lastBoughtDate)
@@ -18,37 +21,86 @@ export const ShoppingListView = ({
         (item) => !item.bought
     )
 
+    useEffect(() => {
+        if (!selectedList) return
+
+        const url = `http://localhost:5001/api/auth/shopping-list/${selectedList._id}/item-suggestions`
+        const token = localStorage.getItem('authToken')
+
+        const options = {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        }
+
+        fetch(url, options)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        'Network response was not ok while deleting shopping list item'
+                    )
+                }
+
+                const data = await response.json()
+                setShoppingSuggestions([...data])
+            })
+            .then((data) =>
+                console.log('Success fetching shopping suggestions')
+            )
+            .catch((error) => console.error('Error:', error))
+    }, [selectedList])
+
     return (
         <>
             {selectedList ? (
                 <div className="min-w-96 w-full p-4 bg-white flex flex-col justify-between">
-                    <div className="mb-8">
-                        <h1 className="text-2xl font-semibold text-center mb-4">
-                            {selectedList.name}
-                        </h1>
-                        <ul>
-                            {itemsAlreadyBought.map((item) => (
-                                <ShoppingListItem
-                                    key={item._id}
-                                    item={item}
-                                    onDelete={() => deleteItem(item._id)}
-                                    markItemAsBought={markItemAsBought}
-                                />
-                            ))}
-                        </ul>
-                        <hr className="my-5" />
-                        <ul>
-                            {itemsStillNeedToBuy.map((item) => (
-                                <ShoppingListItem
-                                    key={item._id}
-                                    item={item}
-                                    onDelete={() => deleteItem(item._id)}
-                                    markItemAsBought={() =>
-                                        markItemAsBought(item._id)
-                                    }
-                                />
-                            ))}
-                        </ul>
+                    <div className="flex flex-col mb-8 flex-grow justify-between">
+                        <div className="flex justify-between flex-col">
+                            <h1 className="text-2xl font-semibold text-center mb-4">
+                                {selectedList.name}
+                            </h1>
+                            <ul>
+                                {itemsStillNeedToBuy.map((item) => (
+                                    <ShoppingListItem
+                                        key={item._id}
+                                        item={item}
+                                        onDelete={() => deleteItem(item._id)}
+                                        markItemAsBought={() =>
+                                            markItemAsBought(item._id)
+                                        }
+                                    />
+                                ))}
+                            </ul>
+                            <ul className="mt-4">
+                                {shoppingSuggestions.map((suggestedItem) => (
+                                    <SuggestedItem
+                                        suggestedItem={suggestedItem}
+                                        addItemSuggestionToList={
+                                            addItemSuggestionToList
+                                        }
+                                    />
+                                ))}
+                            </ul>
+                        </div>
+                        {itemsAlreadyBought.length > 0 && (
+                            <>
+                                <hr className="my-5" />
+                                <ul>
+                                    {itemsAlreadyBought.map((item) => (
+                                        <ShoppingListItem
+                                            key={item._id}
+                                            item={item}
+                                            onDelete={() =>
+                                                deleteItem(item._id)
+                                            }
+                                            markItemAsBought={markItemAsBought}
+                                        />
+                                    ))}
+                                </ul>
+                            </>
+                        )}
                     </div>
                     <div className="flex items-center">
                         <NewItemNameInput

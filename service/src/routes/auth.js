@@ -5,6 +5,7 @@ const User = require('../models/User')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const ShoppingList = require('../models/ShoppingList')
+const moment = require('moment')
 require('dotenv').config()
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -219,6 +220,7 @@ router.delete('/shopping-list/:listId/item/:itemId', async (req, res) => {
 router.put('/shopping-list/:listId/item/:itemId', async (req, res) => {
     const listId = req.params.listId
     const itemId = req.params.itemId
+    const bought = req.body.bought
 
     try {
         // Find the shopping list by ID
@@ -230,9 +232,15 @@ router.put('/shopping-list/:listId/item/:itemId', async (req, res) => {
 
         // Mark item as bought
         const item = shoppingList.items.id(itemId)
-        item.bought = true
-        item.lastBoughtDate = new Date()
+        item.bought = bought
 
+        if (bought) {
+            if (item.lastBoughtDate) {
+                const diff = moment().diff(item.lastBoughtDate, 'days')
+                item.frequency = item.frequency ? (item.frequency + diff) / 2 : diff
+            }
+            item.lastBoughtDate = new Date()
+        }
 
         // Save the updated shopping list
         await shoppingList.save()
@@ -241,6 +249,24 @@ router.put('/shopping-list/:listId/item/:itemId', async (req, res) => {
     } catch (error) {
         console.error('Error occurred while adding item:', error.stack)
         res.status(500).send('Server error, could not add item')
+    }
+})
+
+router.get('/shopping-list/:listId/item-suggestions', async (req, res) => {
+    try {
+        const listId = req.params.listId
+        // Find the shopping list by ID
+        const shoppingList = await ShoppingList.findById(listId)
+        const items = shoppingList.items.filter(({
+                                                     bought,
+                                                     lastBoughtDate,
+                                                     frequency,
+                                                 }) => bought && moment().diff(lastBoughtDate) > frequency)
+
+        res.status(200).json(items)
+    } catch (error) {
+        console.error('Error occurred while getting item suggestions:', error.stack)
+        res.status(500).send('Server error, could get item suggestions')
     }
 })
 

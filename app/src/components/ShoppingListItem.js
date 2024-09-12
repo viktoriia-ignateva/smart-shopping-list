@@ -17,7 +17,6 @@ export const ShoppingListItem = ({ item, onDelete, markItemAsBought }) => {
         >
             <div className="flex items-center">
                 <MdCheck size={25} className={boughtCheckMarkCss} />
-
                 {item.name}
             </div>
             {!item.bought && (

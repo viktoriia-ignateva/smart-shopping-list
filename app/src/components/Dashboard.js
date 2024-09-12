@@ -120,6 +120,46 @@ export default function Dashboard() {
                 Authorization: 'Bearer ' + token,
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({
+                bought: true,
+            }),
+        }
+
+        fetch(url, options)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        'Network response was not ok while deleting shopping list item'
+                    )
+                }
+
+                const data = await response.json()
+                setShoppingLists(
+                    shoppingLists.map((list) => {
+                        if (list._id === selectedListId) return data
+                        else return list
+                    })
+                )
+            })
+            .then((data) =>
+                console.log('Success (deleting shopping list item):' + data)
+            )
+            .catch((error) => console.error('Error:', error))
+    }
+
+    const addItemSuggestionToList = (itemId) => {
+        const url = `http://localhost:5001/api/auth/shopping-list/${selectedListId}/item/${itemId}`
+        const token = localStorage.getItem('authToken')
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                bought: false,
+            }),
         }
 
         fetch(url, options)
@@ -145,7 +185,7 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="flex w-9/12	 bg-gray-100 gap-4">
+        <div className="flex w-9/12	 bg-gray-100">
             <ShoppingLists
                 shoppingLists={shoppingLists}
                 setShoppingLists={setShoppingLists}
@@ -156,6 +196,7 @@ export default function Dashboard() {
                 addNewItem={addNewItem}
                 deleteItem={deleteItem}
                 markItemAsBought={markItemAsBought}
+                addItemSuggestionToList={addItemSuggestionToList}
             />
         </div>
     )
