@@ -6,6 +6,7 @@ export default function ShoppingLists({
     shoppingLists,
     setShoppingLists,
     setSelectedListId,
+    selectedListId,
 }) {
     const [newShoppingListName, setNewShoppingListName] = useState('')
     const [editingList, setEditingList] = useState(null)
@@ -21,7 +22,7 @@ export default function ShoppingLists({
                         {shoppingLists.map((list) => (
                             <li
                                 key={list._id}
-                                className="flex group justify-between py-2 px-4 rounded-lg items-center m-2 hover:bg-slate-100 hover:cursor-pointer"
+                                className={`flex group justify-between py-2 px-4 rounded-lg items-center m-2 hover:bg-slate-100 hover:cursor-pointer ${selectedListId === list._id && 'bg-slate-50'}`}
                                 onClick={() => setSelectedListId(list._id)}
                             >
                                 {editingList?._id === list._id ? (

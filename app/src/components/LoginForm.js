@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 
 function Input({ inputName, handleInput }) {
@@ -56,8 +56,8 @@ function LoginButton({ email, password, setError }) {
             .then((data) => {
                 console.log('Success (login):', data)
                 localStorage.setItem('authToken', data.token)
-
-                navigate('/lists')
+                localStorage.setItem('username', data.user.username)
+                window.dispatchEvent(new Event('storage'))
             })
             .catch((error) => {
                 console.error('Error:', error)
@@ -81,7 +81,18 @@ export default function LoginForm() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
-    const token = localStorage.getItem('authToken')
+    const [token, setToken] = useState(localStorage.getItem('authToken'))
+
+    useEffect(() => {
+        const storageListener = () => {
+            console.log('Change to local storage!')
+            setToken(localStorage.getItem('authToken'))
+        }
+
+        window.addEventListener('storage', storageListener)
+
+        return () => window.removeEventListener('storage', storageListener)
+    }, [])
 
     if (token) return <Navigate to="/lists" />
 

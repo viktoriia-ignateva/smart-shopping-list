@@ -56,6 +56,7 @@ function RegisterButton({ email, password, setError }) {
             .then((data) => {
                 console.log('Success:', data)
                 localStorage.setItem('authToken', data.token)
+                localStorage.setItem('username', data.user.username)
                 console.log('Token:', data.token)
                 navigate('/lists')
             })

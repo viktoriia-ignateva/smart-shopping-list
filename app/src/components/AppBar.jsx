@@ -1,22 +1,25 @@
-import { MdOutlineLogout } from 'react-icons/md'
-import { useNavigate } from 'react-router-dom'
+import { MdOutlineLogout, MdOutlineNoAccounts } from 'react-icons/md'
 
-const AppBar = () => {
-    const navigate = useNavigate()
-    const logout = () => {
-        localStorage.removeItem('authToken')
-        navigate('/login')
-    }
+const AppBar = ({ onClickDeleteAccount, onLogout }) => {
+    const username = localStorage.getItem('username')
 
     return (
         <div className="flex justify-between items-center w-full border-b px-4 py-3">
-            Name:
             <button
                 className="px-3 flex py-1.5 text-md items-center text-slate-600 hover:text-red-500"
-                onClick={logout}
+                onClick={onLogout}
             >
                 <MdOutlineLogout size={20} className="mr-2" />
                 Logout
+            </button>
+
+            {`Hello, ${username}`}
+            <button
+                className="px-3 flex py-1.5 text-md items-center text-slate-600 hover:text-red-500"
+                onClick={onClickDeleteAccount}
+            >
+                <MdOutlineNoAccounts size={20} className="mr-2" />
+                Delete Account
             </button>
         </div>
     )

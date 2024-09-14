@@ -21,6 +21,9 @@ const SuggestedItem = ({ suggestedItem, addItemSuggestionToList }) => {
                 {suggestedItem.name}
             </div>
             <div className="invisible flex items-center justify-end group-hover:visible">
+                <button className="mr-4 text-xs text-amber-500 opacity-70 hover:text-red-500 hover:underline hover:opacity-100">
+                    do no suggest
+                </button>
                 <MdClose size={25} className="fill-amber-500" />
             </div>
         </li>

@@ -15,6 +15,7 @@ const ShoppingListSchema = new mongoose.Schema({
         bought: { type: Boolean, default: false },
         lastBoughtDate: { type: Date, required: false },
         frequency: { type: Number, required: false },
+        excludeFromSuggestions: { type: Boolean, default: false },
     }],
 })
 

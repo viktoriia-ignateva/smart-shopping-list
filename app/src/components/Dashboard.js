@@ -7,12 +7,20 @@ export default function Dashboard() {
     const [error, setError] = useState(null)
     const [shoppingLists, setShoppingLists] = useState([])
     const [selectedListId, setSelectedListId] = useState(null)
+    const token = localStorage.getItem('authToken')
 
     const selectedList = useMemo(() => {
         if (selectedListId) {
             return shoppingLists.find((list) => list._id === selectedListId)
         }
     }, [selectedListId, shoppingLists])
+
+    // auto select the list if only one list available
+    useEffect(() => {
+        if (shoppingLists.length === 1) {
+            setSelectedListId(shoppingLists[0]._id)
+        }
+    }, [shoppingLists])
 
     useEffect(() => {
         // getting all shopping lists for the authenticated user
@@ -191,11 +199,12 @@ export default function Dashboard() {
             .catch((error) => console.error('Error:', error))
     }
 
-    if (error) return <Navigate to="/login" />
+    if (error || !token) return <Navigate to="/login" />
 
     return (
         <div className="flex bg-gray-50 w-9/12 mt-10 min-h-96 max-w-4xl">
             <ShoppingLists
+                selectedListId={selectedListId}
                 shoppingLists={shoppingLists}
                 setShoppingLists={setShoppingLists}
                 setSelectedListId={setSelectedListId}

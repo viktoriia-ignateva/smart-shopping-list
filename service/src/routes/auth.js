@@ -261,12 +261,39 @@ router.get('/shopping-list/:listId/item-suggestions', async (req, res) => {
                                                      bought,
                                                      lastBoughtDate,
                                                      frequency,
-                                                 }) => bought && moment().diff(lastBoughtDate) > frequency)
+                                                     excludeFromSuggestions,
+                                                 }) => true || bought && moment().diff(lastBoughtDate) > frequency)
 
         res.status(200).json(items)
     } catch (error) {
         console.error('Error occurred while getting item suggestions:', error.stack)
         res.status(500).send('Server error, could get item suggestions')
+    }
+})
+
+router.delete('/user/:username', async (req, res) => {
+    try {
+        const username = req.params.username
+
+        //get all the shopping lists
+        let user = await User.findOne({ username })
+
+        const { acknowledged } = await ShoppingList.deleteMany({ userID: user._id })
+
+        if (!acknowledged) {
+            return res.status(500).send('Error deleting shopping lists')
+        }
+
+        let userDeleted = await User.findOneAndDelete({ username })
+
+        if (!userDeleted) {
+            return res.status(404).json({ message: 'user not found' })
+        }
+
+        return res.status(200).send('User data deleted')
+    } catch (error) {
+        console.log(error)
+        res.status(500).send('Error deleting user')
     }
 })
 
