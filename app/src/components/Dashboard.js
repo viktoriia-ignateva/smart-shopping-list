@@ -199,6 +199,42 @@ export default function Dashboard() {
             .catch((error) => console.error('Error:', error))
     }
 
+    const excludeItemFromSuggestions = (itemId) => {
+        const url = `http://localhost:5001/api/auth/shopping-list/${selectedListId}/exclude-item-suggestion/${itemId}`
+        const token = localStorage.getItem('authToken')
+
+        const options = {
+            method: 'PUT',
+            headers: {
+                Authorization: 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+        }
+
+        fetch(url, options)
+            .then(async (response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        'Network response was not ok while excluding list item from suggestion'
+                    )
+                }
+                const data = await response.json()
+
+                setShoppingLists(
+                    shoppingLists.map((list) => {
+                        if (list._id === selectedListId) return data
+                        else return list
+                    })
+                )
+            })
+            .then((data) =>
+                console.log(
+                    'Success (exclude list item from suggestions):' + data
+                )
+            )
+            .catch((error) => console.error('Error:', error))
+    }
+
     if (error || !token) return <Navigate to="/login" />
 
     return (
@@ -215,6 +251,7 @@ export default function Dashboard() {
                 deleteItem={deleteItem}
                 markItemAsBought={markItemAsBought}
                 addItemSuggestionToList={addItemSuggestionToList}
+                excludeItemFromSuggestions={excludeItemFromSuggestions}
             />
         </div>
     )

@@ -1,7 +1,11 @@
 import React from 'react'
 import { MdAutoFixHigh, MdCheck, MdClose } from 'react-icons/md'
 
-const SuggestedItem = ({ suggestedItem, addItemSuggestionToList }) => {
+const SuggestedItem = ({
+    suggestedItem,
+    addItemSuggestionToList,
+    excludeItemFromSuggestions,
+}) => {
     return (
         <li
             className={`relative group flex items-center justify-between py-2 px-3 m-2 bg-amber-50/50 hover:bg-amber-50 rounded-lg cursor-pointer`}
@@ -21,10 +25,22 @@ const SuggestedItem = ({ suggestedItem, addItemSuggestionToList }) => {
                 {suggestedItem.name}
             </div>
             <div className="invisible flex items-center justify-end group-hover:visible">
-                <button className="mr-4 text-xs text-amber-500 opacity-70 hover:text-red-500 hover:underline hover:opacity-100">
+                <button
+                    className="mr-4 text-xs text-amber-500 opacity-70 hover:text-red-500 hover:underline hover:opacity-100"
+                    onClick={(e) => {
+                        excludeItemFromSuggestions(suggestedItem._id)
+                        e.stopPropagation()
+                    }}
+                >
                     do no suggest
                 </button>
-                <MdClose size={25} className="fill-amber-500" />
+                <MdClose
+                    size={25}
+                    className="fill-amber-500"
+                    onClick={(e) => {
+                        e.stopPropagation()
+                    }}
+                />
             </div>
         </li>
     )

@@ -257,14 +257,35 @@ router.get('/shopping-list/:listId/item-suggestions', async (req, res) => {
         const listId = req.params.listId
         // Find the shopping list by ID
         const shoppingList = await ShoppingList.findById(listId)
-        const items = shoppingList.items.filter(({
-                                                     bought,
-                                                     lastBoughtDate,
-                                                     frequency,
-                                                     excludeFromSuggestions,
-                                                 }) => true || bought && moment().diff(lastBoughtDate) > frequency)
+        const items = shoppingList
+            .items.filter(({
+                               bought,
+                               lastBoughtDate,
+                               frequency,
+                               excludeFromSuggestions,
+                           }) => !excludeFromSuggestions && bought && moment().diff(lastBoughtDate) > frequency)
 
         res.status(200).json(items)
+    } catch (error) {
+        console.error('Error occurred while getting item suggestions:', error.stack)
+        res.status(500).send('Server error, could get item suggestions')
+    }
+})
+
+router.put('/shopping-list/:listId/exclude-item-suggestion/:itemId', async (req, res) => {
+    try {
+        const listId = req.params.listId
+        const itemId = req.params.itemId
+
+        // Find the shopping list by ID
+        const shoppingList = await ShoppingList.findById(listId)
+        const item = shoppingList.items.id(itemId)
+
+        item.excludeFromSuggestions = true
+        // Save the updated shopping list
+        await shoppingList.save()
+
+        res.status(200).json(shoppingList)
     } catch (error) {
         console.error('Error occurred while getting item suggestions:', error.stack)
         res.status(500).send('Server error, could get item suggestions')

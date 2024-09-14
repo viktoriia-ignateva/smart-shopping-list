@@ -9,6 +9,7 @@ export const ShoppingListView = ({
     deleteItem,
     markItemAsBought,
     addItemSuggestionToList,
+    excludeItemFromSuggestions,
 }) => {
     const [newItemName, setNewItemName] = useState('')
     const [shoppingSuggestions, setShoppingSuggestions] = useState([])
@@ -79,6 +80,9 @@ export const ShoppingListView = ({
                                         suggestedItem={suggestedItem}
                                         addItemSuggestionToList={
                                             addItemSuggestionToList
+                                        }
+                                        excludeItemFromSuggestions={
+                                            excludeItemFromSuggestions
                                         }
                                     />
                                 ))}
