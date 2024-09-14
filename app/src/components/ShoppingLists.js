@@ -69,11 +69,13 @@ export default function ShoppingLists({
             <div>
                 <NewShoppingListNameInput
                     inputName={'New list'}
+                    newShoppingListName={newShoppingListName}
                     handleInput={(event) => {
                         setNewShoppingListName(event.target.value)
                     }}
                 />
                 <AddNewShoppingListButton
+                    setNewShoppingListName={setNewShoppingListName}
                     newShoppingListName={newShoppingListName}
                     setShoppingLists={setShoppingLists}
                 />
@@ -82,7 +84,11 @@ export default function ShoppingLists({
     )
 }
 
-function NewShoppingListNameInput({ inputName, handleInput }) {
+function NewShoppingListNameInput({
+    newShoppingListName,
+    inputName,
+    handleInput,
+}) {
     return (
         <div className="w-full">
             <input
@@ -91,6 +97,7 @@ function NewShoppingListNameInput({ inputName, handleInput }) {
                 type={inputName}
                 placeholder={inputName}
                 onChange={handleInput}
+                value={newShoppingListName}
             />
         </div>
     )
@@ -107,7 +114,11 @@ function EditShoppingListNameInput({ listName, handleInput }) {
     )
 }
 
-function AddNewShoppingListButton({ newShoppingListName, setShoppingLists }) {
+function AddNewShoppingListButton({
+    newShoppingListName,
+    setShoppingLists,
+    setNewShoppingListName,
+}) {
     function handleSubmit() {
         const url = 'http://localhost:5001/api/auth/shopping-list'
         const token = localStorage.getItem('authToken')
@@ -133,18 +144,20 @@ function AddNewShoppingListButton({ newShoppingListName, setShoppingLists }) {
                 const data = await response.json()
                 setShoppingLists(data)
             })
-            .then((data) =>
+            .then((data) => {
                 console.log('Success (create shopping lists):' + data)
-            )
+                setNewShoppingListName('')
+            })
             .catch((error) => console.error('Error:', error))
     }
 
     return (
         <div>
             <button
+                disabled={newShoppingListName.length === 0}
                 onClick={handleSubmit}
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="disabled:opacity-75 disabled:cursor-not-allowed flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
                 Add New List
             </button>
