@@ -1,5 +1,5 @@
 import React from 'react'
-import { MdAutoFixHigh, MdCheck, MdClose } from 'react-icons/md'
+import { MdAutoFixHigh, MdCheck } from 'react-icons/md'
 
 const SuggestedItem = ({
     suggestedItem,
@@ -26,7 +26,7 @@ const SuggestedItem = ({
             </div>
             <div className="invisible flex items-center justify-end group-hover:visible">
                 <button
-                    className="mr-4 text-xs text-amber-500 opacity-70 hover:text-red-500 hover:underline hover:opacity-100"
+                    className="text-xs opacity-70 text-red-500 hover:underline hover:opacity-100"
                     onClick={(e) => {
                         excludeItemFromSuggestions(suggestedItem._id)
                         e.stopPropagation()
@@ -34,13 +34,6 @@ const SuggestedItem = ({
                 >
                     do no suggest
                 </button>
-                <MdClose
-                    size={25}
-                    className="fill-amber-500"
-                    onClick={(e) => {
-                        e.stopPropagation()
-                    }}
-                />
             </div>
         </li>
     )
