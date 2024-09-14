@@ -77,6 +77,7 @@ export const ShoppingListView = ({
                             <ul className="mt-4">
                                 {shoppingSuggestions.map((suggestedItem) => (
                                     <SuggestedItem
+                                        key={suggestedItem._id}
                                         suggestedItem={suggestedItem}
                                         addItemSuggestionToList={
                                             addItemSuggestionToList

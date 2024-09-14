@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 
 function Input({ inputName, handleInput }) {
     return (
-        <div className="max-w-xs mx-auto">
+        <div className="w-full">
             <label
                 htmlFor={inputName}
                 className="block text-gray-700 font-semibold mb-2"
@@ -26,6 +26,11 @@ function RegisterButton({ email, password, setError }) {
 
     function handleSubmit() {
         setError('')
+
+        if (!email || !password) {
+            setError('Invalid Credentials!')
+            return
+        }
 
         const url = 'http://localhost:5001/api/auth/register'
         const options = {
@@ -85,7 +90,7 @@ export default function RegistrationForm() {
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 gap-4">
-            <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+            <div className="mt-10 sm:mx-auto w-full sm:max-w-sm">
                 <Input
                     inputName={'Email'}
                     handleInput={(event) => {
@@ -104,7 +109,7 @@ export default function RegistrationForm() {
                     </div>
                 )}
 
-                <div className="p-2 gap-4">
+                <div className="py-2 gap-4">
                     <RegisterButton
                         email={email}
                         password={password}

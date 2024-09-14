@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom'
 
 function Input({ inputName, handleInput }) {
     return (
-        <div className="max-w-xs mx-auto">
+        <div className="w-full">
             <label
                 htmlFor={inputName}
                 className="block text-gray-700 font-semibold mb-2"
@@ -117,7 +117,7 @@ export default function LoginForm() {
                         {error}
                     </div>
                 )}
-                <div className="flex p-2 gap-4">
+                <div className="flex py-2 gap-4">
                     <button
                         className="flex w-1/2 mt-2 justify-center items-center text-indigo-500 rounded-md border border-indigo-600"
                         onClick={() => navigate('/register')}
