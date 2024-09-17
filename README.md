@@ -60,4 +60,4 @@ The frontend will typically be available at `http://localhost:3000`.
    node server.js
    ```
 
-The backend will be running at `http://localhost:5000` (or whichever port is configured in your server setup).
+The backend will be running at `http://localhost:5001` (or whichever port is configured in your server setup).
